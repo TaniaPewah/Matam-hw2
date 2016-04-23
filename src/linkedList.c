@@ -9,28 +9,41 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "aux_macros.h"
 
 typedef void* Element;
 typedef int (*compareFunction)( void* a, void* b);
 
+bool quickSort_TEST() {
 
+	bool final = true;
 
-int main(){
+	/*TEST_EQUALS(final, , swap(NULL, 0, 1, 0, 1, &result));
 
-int compareInt(void *a, void *b) {
-	int a_ = *(int *) a;
-	int b_ = *(int *) b;
+	TEST_EQUALS(final, , partition(apartment, 0, 2, &squareVal));
 
-	if ( a_ < b_ ) return 1;
+	TEST_EQUALS(final, 1, quickSort(apartment));*/
 
-	if ( a_ > b_ ) return -1;
+	return final;
+}
 
-	return 0;
+int main() {
 
+	int compareInt(void *a, void *b) {
+		int a_ = *(int *) a;
+		int b_ = *(int *) b;
+
+		if ( a_ <= b_ ) return 1;
+
+		else return -1;
 	}
+
+
+	RUN_TEST( quickSort_TEST);
 
 	return 0;
 }
+
 
 // Swaps two items in an array, changing the original array
 void swap ( void** array, int size, int firstIndex, int secondIndex ) {
