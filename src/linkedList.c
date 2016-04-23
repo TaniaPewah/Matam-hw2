@@ -59,7 +59,8 @@ void swap ( void** array, int size, int firstIndex, int secondIndex ) {
 	 memcpy( array[secondIndex], temp, size);
 }
 
-int partition ( void** array, int size, int first, int last, compareFunction cmprFunc ) {
+int partition ( void** array, int size, int first, int last,
+										compareFunction cmprFunc ) {
 
 	char pivot[size];
 	memcpy( pivot, array[last], size );
