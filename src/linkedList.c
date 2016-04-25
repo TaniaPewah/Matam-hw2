@@ -13,36 +13,93 @@
 
 typedef void* Element;
 
+typedef struct el {
+
+	int id;
+	char* value;
+} element;
+
 typedef int (*compareFunction)( void* a, void* b);
 
-bool quickSort_TEST() {
+void swap ( void** array, int size, int firstIndex, int secondIndex ) ;
 
-	bool final = true;
-	//void els[4] = {} ;
-	int a = 3;
-	int b = 2;
+int partition ( void** array, int size, int first, int last,
+										compareFunction cmprFunc );
 
-	int compareInt(void *a, void *b) {
-		int a_ = *(int *) a;
-		int b_ = *(int *) b;
+void quickSort (void** array, int size, int start, int end,
+				compareFunction cmprFunc );
+
+int compareElementId(void *a, void *b) {
+		int a_ = ( (element*) a )->id;
+		int b_ = ( (element*) b )->id;
 
 		if ( a_ <= b_ ) return 1;
 
 		else return -1;
+}
+
+void printArray( void** array, int len ){
+
+	printf( "\n" );
+
+	for( int i = 0; i < len; i++ ){
+		printf( "%d ", ((element*)array[i])->id );
 	}
 
-	//TEST_EQUALS(final, , swap());
+	printf( "\n" );
+}
 
-	/*TEST_EQUALS(final, , partition(apartment, 0, 2, &squareVal));
+bool quickSort_TEST() {
 
-	TEST_EQUALS(final, 1, quickSort(apartment));*/
+	bool final = true;
+	element* el1 = (element*) malloc( sizeof( element ));
+	element* el2 = (element*) malloc( sizeof( element ));
+	element* el3 = (element*) malloc( sizeof( element ));
+	element* el4 = (element*) malloc( sizeof( element ));
+	element* el5 = (element*) malloc( sizeof( element ));
+
+	if( el1 && el2 && el3 ) {
+
+		el1->id = 1;
+		el2->id = 2;
+		el3->id = 3;
+		el4->id = 4;
+		el5->id = 5;
+
+		Element els[5] = { el1, el2, el3, el4, el5 };
+
+		TEST_EQUALS(final, 1, compareElementId( el1, el2 ));
+		TEST_EQUALS(final, -1, compareElementId( el3, el2 ));
+
+		swap(els, sizeof( element ), 0, 4 );
+		TEST_EQUALS(final, 5, el1->id );
+		TEST_EQUALS(final, 1, el5->id );
+
+		printArray( els, 5 );
+
+		int q = partition( els, sizeof( element ), 0, 3, compareElementId );
+
+		printArray( els, 5 );
+
+		TEST_EQUALS(final, 2, q );
+
+		 q = partition( els, sizeof( element ), 0, 4, compareElementId );
+
+		TEST_EQUALS(final, 0, q );
+
+		printArray( els, 5 );
+
+		quickSort( els, sizeof( element ), 0, 4 , compareElementId );
+
+		TEST_EQUALS(final, 2, ( (element*) els[1] )->id );
+
+		printArray( els, 5 );
+	}
 
 	return final;
 }
 
 int main() {
-
-
 
 	RUN_TEST( quickSort_TEST);
 
@@ -70,6 +127,7 @@ int partition ( void** array, int size, int first, int last,
 	for( int currIndx = first; currIndx < last; currIndx++ ){
 
 		if ( cmprFunc( array[currIndx], pivot ) == 1 ){
+
 			swap( array, size, currIndx, sortedIndx );
 			sortedIndx++;
 		}
