@@ -21,15 +21,22 @@ typedef struct {
   freeFunction freeFn;
 } list;
 
-void list_new(list *list, int elementSize, freeFunction freeFn);
-void list_destroy(list *list);
+void listCreate( list *list, int elementSize, freeFunction freeFn);
+void listDestroy( list *list);
+int listGetSize( list *list);
 
-void list_prepend(list *list, void *element);
-void list_append(list *list, void *element);
-int list_size(list *list);
+void listInsertFirst( list *list, void *element);
+void listInsertLast( list *list, void *element);
 
-void list_for_each(list *list, listIterator iterator);
-void list_head(list *list, void *element, bool removeFromList);
-void list_tail(list *list, void *element);
+void listInsertBeforeCurrent( list *list, void *element);
+
+void listInsertAfterCurrent( list *list, void *element);
+void listRemoveCurrent( list *list, void *element );
+void listSort( list *list );
+void listClear( list *list );
+
+void listForEach( list *list, listIterator iterator);
+void listGetFirst( list *list, void *element, bool removeFromList);
+void listGetNext( list *list, void *element, bool removeFromList);
 
 #endif
