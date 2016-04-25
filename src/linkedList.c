@@ -13,10 +13,11 @@
 
 typedef void* Element;
 
-typedef struct el {
+typedef struct {
 
 	int id;
 	char* value;
+
 } element;
 
 typedef int (*compareFunction)( void* a, void* b);
@@ -58,7 +59,7 @@ bool quickSort_TEST() {
 	element* el4 = (element*) malloc( sizeof( element ));
 	element* el5 = (element*) malloc( sizeof( element ));
 
-	if( el1 && el2 && el3 ) {
+	if( el1 && el2 && el3 && el4 && el5 ) {
 
 		el1->id = 1;
 		el2->id = 2;
@@ -95,6 +96,12 @@ bool quickSort_TEST() {
 
 		printArray( els, 5 );
 	}
+
+	free( el1 );
+	free( el2 );
+	free( el3 );
+	free( el4 );
+	free( el5 );
 
 	return final;
 }
