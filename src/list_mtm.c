@@ -99,8 +99,7 @@ List listCopy( List list ) {
 
 		while( list->Current ){
 
-			ListItem copyItem = CreateListItem( copy->copyElementFunc,
-												list->Current );
+			ListItem copyItem = copy->copyElementFunc( list->Current->Element );
 
 			if( copyItem ) {
 

@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "aux_macros.h"
+#include "list_mtm.h"
 
 typedef void* Element;
 
@@ -23,6 +24,20 @@ typedef struct {
 
 typedef int (*compareFunction)( void* a, void* b);
 
+void freeElement( Element element ){
+
+	 free( element );
+	 element = NULL;
+}
+
+Element copyElement( Element element ){
+
+	void *temp = malloc( sizeof( *element ) );
+	memcpy( temp, element, sizeof( *element ) );
+
+	return temp;
+}
+
 void swap ( void** array, int size, int firstIndex, int secondIndex ) ;
 
 int partition ( void** array, int size, int first, int last,
@@ -32,12 +47,14 @@ void quickSort (void** array, int size, int start, int end,
 				compareFunction cmprFunc );
 
 int compareElementId(void *a, void *b) {
-		int a_ = ( (element*) a )->id;
-		int b_ = ( (element*) b )->id;
 
-		if ( a_ <= b_ ) return 1;
+	int a_ = ( (element*) a )->id;
+	int b_ = ( (element*) b )->id;
 
-		else return -1;
+	if( a_ < b_ ) return 1;
+	if( a_ == b_ ) return 0;
+
+	else return -1;
 }
 
 void printArray( void** array, int len ){
@@ -107,9 +124,49 @@ bool quickSort_TEST() {
 	return final;
 }
 
+bool list_mtm_TEST() {
+
+	bool final = true;
+
+	Element el1 = malloc( sizeof( element ));
+	Element el2 = malloc( sizeof( element ));
+	Element el3 = malloc( sizeof( element ));
+
+	if( el1 && el2 && el3  ) {
+
+		( (element*) el1 )->id = 1;
+		( (element*) el2 )->id = 2;
+		( (element*) el3 )->id = 3;
+
+		List list = NULL;
+
+		TEST_EQUALS(final, -1, listGetSize( list ));
+
+		list = listCreate( copyElement, freeElement );
+
+		TEST_EQUALS(final, 0, listGetSize( list ));
+		TEST_EQUALS(final, NULL, listGetCurrent( list ));
+		TEST_EQUALS(final, NULL, listGetFirst( list ));
+		TEST_EQUALS(final, NULL, listGetNext( list ));
+
+		ListResult r = listInsertFirst( list, el1 );
+
+		TEST_EQUALS(final, LIST_SUCCESS, r );
+
+		TEST_EQUALS(final, 0 ,compareElementId( listGetFirst( list ), el1 ) );
+	}
+
+	freeElement( el1 );
+	freeElement( el2 );
+	freeElement( el3 );
+
+	return final;
+}
+
 int main() {
 
 	RUN_TEST( quickSort_TEST);
+	RUN_TEST( list_mtm_TEST );
 
 	return 0;
 }
@@ -134,7 +191,7 @@ int partition ( void** array, int size, int first, int last,
 
 	for( int currIndx = first; currIndx < last; currIndx++ ){
 
-		if ( cmprFunc( array[currIndx], pivot ) == 1 ){
+		if ( cmprFunc( array[currIndx], pivot ) != -1 ){
 
 			swap( array, size, currIndx, sortedIndx );
 			sortedIndx++;
