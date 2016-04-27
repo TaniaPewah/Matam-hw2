@@ -24,6 +24,44 @@ static void DestroyListItem( FreeListElement freeElement, ListItem item );
 
 static int GetListLength( List list );
 
+ListElement listGetFirst(List list){
+
+	ListElement first = NULL;
+
+	if ( list && list->First ){
+
+		first = list->First->Element;
+	}
+
+	return first;
+}
+
+int listGetSize(List list){
+
+	int size = -1;
+
+	if( list ){
+
+		size = GetListLength( list );
+	}
+
+	return size;
+}
+
+ListElement listGetNext(List list){
+
+	ListElement next = NULL;
+
+	return next;
+}
+
+ListElement listGetCurrent( List list ){
+
+	ListElement current = NULL;
+
+	return current;
+}
+
 List listCreate( CopyListElement copyElement, FreeListElement freeElement ) {
 
 	List list = malloc( sizeof( *list ) );
@@ -248,6 +286,39 @@ static ListItem CreateListItem( CopyListElement copyElement,
 		item = NULL;
 	}
 	return item;
+}
+
+List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
+
+	List filtered = NULL;
+
+	if( list && filterElement ){
+
+		filtered = listCopy( list );
+
+		if( filtered && filtered->First ){
+
+			filtered->Current = filtered->First;
+
+			while( filtered && filtered->Current ){
+
+				if( !filterElement( filtered->Current->Element, key ) ){
+
+					if ( listRemoveCurrent( filtered ) == LIST_SUCCESS ){
+
+						filtered->Current = filtered->Current->Next;
+
+					} else {
+
+						filtered->Current = NULL;
+						listDestroy( filtered );
+					}
+				}
+			}
+		}
+	}
+
+	return filtered;
 }
 
 /**
