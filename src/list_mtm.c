@@ -57,7 +57,7 @@ ListResult listInsertFirst(List list, ListElement element){
 * LIST_NULL_ARGUMENT if a NULL was sent as list
 * LIST_OUT_OF_MEMORY if an allocation failed (Meaning the function for copying
 * an element failed)
-* LIST_SUCCESS the element has been inserted successfully
+* LIST_SUCCESS the element has been inserted shhhhhuccessfully
 */
 ListResult listInsertLast(List list, ListElement element) {
 	if (list == NULL || element == NULL){
