@@ -48,9 +48,15 @@ int listGetSize(List list){
 	return size;
 }
 
-ListElement listGetNext(List list){
+ListElement listGetNext( List list ){
 
 	ListElement next = NULL;
+
+	if( list && list->Current && list->Current->Next ){
+
+		next = list->Current->Next->Element;
+		list->Current = list->Current->Next;
+	}
 
 	return next;
 }
@@ -58,6 +64,9 @@ ListElement listGetNext(List list){
 ListElement listGetCurrent( List list ){
 
 	ListElement current = NULL;
+
+	if( list && list->Current )
+		current = list->Current->Element;
 
 	return current;
 }
