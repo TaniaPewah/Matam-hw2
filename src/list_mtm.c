@@ -49,9 +49,8 @@ List listCopy( List list ) {
 	if( copy && list->First ){
 
 		list->Current = list->First;
-		copy->Current = copy->First;
 
-		while( list->Current && copy->Current ){
+		while( list->Current ){
 
 			ListItem copyItem = CreateListItem( copy->copyElementFunc,
 												list->Current );
@@ -60,8 +59,11 @@ List listCopy( List list ) {
 
 				if ( listInsertLast( copy, copyItem ) == LIST_SUCCESS ) {
 
-					copy->Current = copy->Current->Next;
 					list->Current = list->Current->Next;
+
+				} else {
+
+					list->Current = NULL;
 				}
 			}
 		}
