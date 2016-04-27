@@ -250,6 +250,39 @@ static ListItem CreateListItem( CopyListElement copyElement,
 	return item;
 }
 
+List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
+
+	List filtered = NULL;
+
+	if( list && filterElement ){
+
+		filtered = listCopy( list );
+
+		if( filtered && filtered->First ){
+
+			filtered->Current = filtered->First;
+
+			while( filtered && filtered->Current ){
+
+				if( !filterElement( filtered->Current->Element, key ) ){
+
+					if ( listRemoveCurrent( filtered ) == LIST_SUCCESS ){
+
+						filtered->Current = filtered->Current->Next;
+
+					} else {
+
+						filtered->Current = NULL;
+						listDestroy( filtered );
+					}
+				}
+			}
+		}
+	}
+
+	return filtered;
+}
+
 /**
  * Removes the currently pointed element of the list using the stored freeing
  * function
