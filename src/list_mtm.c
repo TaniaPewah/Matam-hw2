@@ -49,6 +49,7 @@ ListElement listGetFirst(List list) {
 	ListElement first = NULL;
 	if ((list != NULL) && (list->First != NULL)) {
 		first = list->First->Element;
+		list->Current = list->First;
 	}
 	return first;
 }
@@ -181,7 +182,7 @@ List listCopy(List list) {
 				}
 				item_to_copy = item_to_copy->Next;
 			} else {
-				destroyList(copy);
+				listDestroy(copy);
 				copy = NULL;
 			}
 		}
@@ -498,9 +499,9 @@ static void DestroyListItem(FreeListElement freeElement, ListItem item) {
 * @param list Target list to be deallocated. If list is NULL nothing will be
 * done
 */
-void listDestroy(List list) {
-	if (listClear(list) == LIST_SUCCESS) {
-		free(list);
+void listDestroy( List list ) {
+	if ( listClear(list) == LIST_SUCCESS) {
+		free( list );
 		list = NULL;
 	}
 }

@@ -1,10 +1,9 @@
 /*
- * genericQuickSort.c
+ * main.c
  *
- *  Created on: Apr 25, 2016
+ *  Created on: Apr 28, 2016
  *      Author: Tania
  */
-
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -24,17 +23,17 @@ typedef struct {
 
 typedef int (*compareFunction)( void* a, void* b);
 
-void freeElement( Element element ){
 
-	 free( element );
+void freeElement( void* element ){
+
+	 //free( element );
 	 element = NULL;
 }
 
-Element copyElement( Element element ){
+void* copyElement( void* element ){
 
-	void *temp = malloc( sizeof( *element ) );
-	memcpy( temp, element, sizeof( *element ) );
-
+	void *temp = malloc( sizeof( element ) );
+	memcpy( temp, element, sizeof( element ) );
 	return temp;
 }
 
@@ -124,41 +123,86 @@ bool quickSort_TEST() {
 	return final;
 }
 
+bool isShorterThan(ListElement num, ListFilterKey length) {
+
+	return *(int*)num < *(int*) length;
+}
+
 bool list_mtm_TEST() {
 
 	bool final = true;
 
-	Element el1 = malloc( sizeof( element ));
-	Element el2 = malloc( sizeof( element ));
-	Element el3 = malloc( sizeof( element ));
+	int el1 = 1;
+	int el2 = 2;
+	int el3 = 3;
 
-	if( el1 && el2 && el3  ) {
+	List list = NULL;
 
-		( (element*) el1 )->id = 1;
-		( (element*) el2 )->id = 2;
-		( (element*) el3 )->id = 3;
+	// List is null everything is null
+	TEST_EQUALS(final, -1, listGetSize( list ));
+	TEST_EQUALS(final, NULL, listGetCurrent( list ));
+	TEST_EQUALS(final, NULL, listGetFirst( list ));
+	TEST_EQUALS(final, NULL, listGetNext( list ));
 
-		List list = NULL;
+	// NULL - if one of the parameters is NULL or allocations failed.
+	TEST_EQUALS( final, NULL, listCreate( NULL, NULL ));
 
-		TEST_EQUALS(final, -1, listGetSize( list ));
+	// list created, size zero everything else null
+	list = listCreate( copyElement, freeElement );
+	TEST_EQUALS(final, 0, listGetSize( list ));
+	TEST_EQUALS(final, NULL, listGetCurrent( list ));
+	TEST_EQUALS(final, NULL, listGetFirst( list ));
+	TEST_EQUALS(final, NULL, listGetNext( list ));
 
-		list = listCreate( copyElement, freeElement );
 
-		TEST_EQUALS(final, 0, listGetSize( list ));
-		TEST_EQUALS(final, NULL, listGetCurrent( list ));
-		TEST_EQUALS(final, NULL, listGetFirst( list ));
-		TEST_EQUALS(final, NULL, listGetNext( list ));
+	//inserting first element el1
+	TEST_EQUALS(final, LIST_SUCCESS, listInsertFirst( list, &el1 ) );
+	TEST_EQUALS(final, 1 , *((int*)listGetFirst( list )) );
+	TEST_EQUALS(final, 1, listGetSize( list ));
+	TEST_EQUALS(final, 1, *((int*)listGetCurrent( list )) );
+	TEST_EQUALS(final, NULL, listGetNext( list ));
+	TEST_EQUALS(final, NULL, listGetCurrent( list ));
 
-		ListResult r = listInsertFirst( list, el1 );
+	// inserting next element
+	TEST_EQUALS(final, 1 , *((int*)listGetFirst( list )) );
+	TEST_EQUALS(final, LIST_SUCCESS, listInsertAfterCurrent( list, &el2 ) );
+	TEST_EQUALS(final, 1 ,  *((int*)listGetFirst( list )) );
+	TEST_EQUALS(final, 2, listGetSize( list ));
+	TEST_EQUALS(final, 2, *((int*)listGetNext( list )));
 
-		TEST_EQUALS(final, LIST_SUCCESS, r );
+	// testing list copy
+	List copy = listCopy( list );
+	TEST_EQUALS(final, 2,  *((int*)listGetCurrent( copy )));
+	TEST_EQUALS(final, 1 , *((int*)listGetFirst( copy )) );
+	TEST_EQUALS(final, 2 , *((int*)listGetNext( copy )) );
+	TEST_EQUALS(final, 2, listGetSize( copy ));
 
-		TEST_EQUALS(final, 0 ,compareElementId( listGetFirst( list ), el1 ) );
-	}
+	// testing different filters
+	List filtered = listFilter( copy, isShorterThan, &el2 );
+	TEST_EQUALS(final, 1, listGetSize( filtered ));
+	listDestroy( filtered );
 
-	freeElement( el1 );
-	freeElement( el2 );
-	freeElement( el3 );
+	filtered = listFilter( copy, isShorterThan, &el1 );
+	TEST_EQUALS(final, 0, listGetSize( filtered ));
+	listDestroy( filtered );
+
+	filtered = listFilter( copy, isShorterThan, &el3 );
+	TEST_EQUALS(final, 2, listGetSize( filtered ));
+	listDestroy( filtered );
+
+	// testing clear and destroy
+	TEST_EQUALS(final, LIST_SUCCESS, listClear( list ));
+	TEST_EQUALS(final, 0, listGetSize( list ));
+
+	listDestroy( list );
+	listDestroy( copy );
+
+	list = NULL;
+
+	TEST_EQUALS(final, -1, listGetSize( list ));
+	TEST_EQUALS(final, NULL, listGetCurrent( list ));
+	TEST_EQUALS(final, NULL, listGetFirst( list ));
+	TEST_EQUALS(final, NULL, listGetNext( list ));
 
 	return final;
 }
